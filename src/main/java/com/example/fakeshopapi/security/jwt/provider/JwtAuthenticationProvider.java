@@ -19,6 +19,7 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
 
     private final JwtTokenizer jwtTokenizer;
 
+
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 

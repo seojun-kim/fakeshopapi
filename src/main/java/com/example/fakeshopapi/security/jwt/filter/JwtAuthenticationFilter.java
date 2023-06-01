@@ -2,6 +2,8 @@ package com.example.fakeshopapi.security.jwt.filter;
 
 import com.example.fakeshopapi.security.jwt.exception.JwtExceptionCode;
 import com.example.fakeshopapi.security.jwt.token.JwtAuthenticationToken;
+import com.example.fakeshopapi.security.jwt.util.JwtTokenizer;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
@@ -13,17 +15,21 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final AuthenticationManager authenticationManager;
+    private final JwtTokenizer jwtTokenizer;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -70,7 +76,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private void getAuthentication(String token) {
-        JwtAuthenticationToken authenticationToken = new JwtAuthenticationToken(token);
+
+        Claims claims = jwtTokenizer.parseAccessToken(token);
+
+        String email = claims.getSubject();
+        List<GrantedAuthority> authorities = getGrantedAuthorities(claims);
+
+        JwtAuthenticationToken authenticationToken = new JwtAuthenticationToken(token, authorities, email, null);
         authenticationManager.authenticate(authenticationToken);
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
     }
@@ -80,10 +92,23 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String authorization = request.getHeader("Authorization");
         log.info("authorization : {}", authorization);
 
-        if(StringUtils.hasText(authorization) && authorization.startsWith("Bearer")) {
+        if(StringUtils.hasText(authorization) && authorization.startsWith("Bearer ")) {
             return authorization.split(" ")[1];
         }
 
         return null;
+    }
+
+    private List<GrantedAuthority> getGrantedAuthorities(Claims claims) {
+
+        List<String> roles = (List<String>) claims.get("roles");
+        ArrayList<GrantedAuthority> authorities = new ArrayList<>();
+
+        for (String role : roles) {
+            authorities.add(() -> role);
+            log.info("role : {}", role);
+        }
+
+        return authorities;
     }
 }

@@ -21,7 +21,6 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
         String exception = (String) request.getAttribute("exception");
         log.error("Commence Get Exception : {}", exception);
-        authException.printStackTrace();
 
         if(exception == null) {
             log.error("entry point >> exception is null");

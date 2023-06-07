@@ -14,7 +14,6 @@ public class HelloApiController {
 
     @GetMapping("/hello")
     public String hello(@RequestHeader("Authorization") String token) {
-        System.out.println(token);
         Long userId = jwtTokenizer.getUserIdFormToken(token);
         return "hello " + userId;
     }

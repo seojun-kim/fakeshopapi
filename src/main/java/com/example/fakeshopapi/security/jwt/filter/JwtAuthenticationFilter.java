@@ -106,7 +106,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         for (String role : roles) {
             authorities.add(() -> role);
-            log.info("role : {}", role);
         }
 
         return authorities;

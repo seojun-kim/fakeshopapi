@@ -45,10 +45,10 @@ public class JwtTokenizer {
 
         Claims claims = Jwts.claims().setSubject(email);
 
-        Date now = new Date();
-
         claims.put("userId", id);
         claims.put("roles", roles);
+
+        Date now = new Date();
 
         return Jwts.builder()
                 .setClaims(claims)

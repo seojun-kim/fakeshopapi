@@ -43,7 +43,7 @@ public class SecurityConfig {
                 .httpBasic(httpBasic -> httpBasic.disable())
                 .authorizeHttpRequests(requests -> requests
                         .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
-                        .requestMatchers("/signup", "/login", "/users/refresh").permitAll()
+                        .requestMatchers("/members/signup", "/members/login", "/members/refreshToken").permitAll()
                         .requestMatchers("/**").hasAnyRole("USER", "MANAGER", "ADMIN")
 //                        .requestMatchers(HttpMethod.POST, "/**").hasAnyRole("USER", "MANAGER", "ADMIN")
                         .anyRequest().authenticated()

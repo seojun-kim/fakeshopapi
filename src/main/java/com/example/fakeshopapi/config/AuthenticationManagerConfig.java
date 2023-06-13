@@ -15,7 +15,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class AuthenticationManagerConfig extends AbstractHttpConfigurer<AuthenticationManagerConfig, HttpSecurity> {
 
     private final JwtAuthenticationProvider jwtAuthenticationProvider;
-    private final JwtTokenizer jwtTokenizer;
 
     @Override
     public void configure(HttpSecurity builder) throws Exception {
@@ -23,7 +22,7 @@ public class AuthenticationManagerConfig extends AbstractHttpConfigurer<Authenti
         AuthenticationManager authenticationManager = builder.getSharedObject(AuthenticationManager.class);
 
         builder.addFilterBefore(
-                new JwtAuthenticationFilter(authenticationManager, jwtTokenizer),
+                new JwtAuthenticationFilter(authenticationManager),
                 UsernamePasswordAuthenticationFilter.class)
                 .authenticationProvider(jwtAuthenticationProvider);
     }

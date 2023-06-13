@@ -20,12 +20,10 @@ public class JwtAuthenticationToken extends AbstractAuthenticationToken {
         this.setAuthenticated(true);
     }
 
-    public JwtAuthenticationToken(String token, Collection<? extends GrantedAuthority> authorities, Object principal, Object credentials) {
-        super(authorities);
+    public JwtAuthenticationToken(String token) {
+        super(null);
         this.token = token;
-        this.principal = principal;
-        this.credentials = credentials;
-        this.setAuthenticated(true);
+        this.setAuthenticated(false);
     }
 
     @Override
